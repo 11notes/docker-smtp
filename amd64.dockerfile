@@ -7,21 +7,17 @@
     git clone https://github.com/11notes/util.git;
 
 # :: Build
-  FROM rust:alpine as build
+  FROM rust as build
   ENV BUILD_VERSION=v0.6.0
   ENV BUILD_DIR=/smtp-server
+  ENV BUILD_ARCH=x86_64-unknown-linux-musl
 
   RUN set -ex; \
-    apk add --no-cache \
-      curl \
-      wget \
-      unzip \
-      build-base \
-      linux-headers \
-      make \
-      cmake \
-      g++ \
-      git; \
+    apt update -y; \
+    apt install -y \
+      clang \
+      musl-tools; \
+    ln -s /bin/g++ /bin/musl-g++; \
     git clone https://github.com/stalwartlabs/smtp-server.git; \
     cd ${BUILD_DIR}; \
     git checkout ${BUILD_VERSION}; \
@@ -31,12 +27,13 @@
   
   RUN set -ex; \
     cd ${BUILD_DIR}; \
-    cargo build --target x86_64-unknown-linux-musl --manifest-path=Cargo.toml --release;
+    rustup target add ${BUILD_ARCH}; \
+    cargo build --target ${BUILD_ARCH} --manifest-path=Cargo.toml --release;
     
 # :: Header
   FROM 11notes/alpine:stable
   COPY --from=util /util/linux/shell/elevenLogJSON /usr/local/bin
-  COPY --from=build /smtp-server/target/x86_64-unknown-linux-musl/release/stalwart-smtp /usr/local/bin
+  COPY --from=build /smtp-server/target/${BUILD_ARCH}/release/stalwart-smtp /usr/local/bin
   ENV APP_NAME="stalwart-smtp"
   ENV APP_ROOT=/smtp
 
