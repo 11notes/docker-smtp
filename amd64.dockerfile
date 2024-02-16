@@ -26,7 +26,8 @@
     cd ${BUILD_DIR}; \
     git checkout ${BUILD_VERSION}; \
     git submodule init; \
-    git submodule update;
+    git submodule update; \
+    sed -i 's/"redis", "postgres", "mysql", "sqlite"/"redis", "postgres", "mysql", "sqlite", "rocksdb"/' Cargo.toml;
   
   RUN set -ex; \
     cd ${BUILD_DIR}; \
@@ -46,9 +47,9 @@
     RUN set -ex; \
       mkdir -p ${APP_ROOT}; \
       mkdir -p ${APP_ROOT}/etc; \
-      mkdir -p ${APP_ROOT}/db; \
-      mkdir -p ${APP_ROOT}/queue; \
-      mkdir -p ${APP_ROOT}/reports; \
+      mkdir -p ${APP_ROOT}/var/db; \
+      mkdir -p ${APP_ROOT}/var/queue; \
+      mkdir -p ${APP_ROOT}/var/reports; \
       mkdir -p ${APP_ROOT}/ssl; \
       apk --no-cache add \
         openssl; \

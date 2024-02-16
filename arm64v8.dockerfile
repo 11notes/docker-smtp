@@ -28,10 +28,12 @@
     git clone --depth 1 --branch ${BUILD_VERSION} https://github.com/stalwartlabs/smtp-server.git; \
     cd ${BUILD_DIR}; \
     git submodule init; \
-    git submodule update;
+    git submodule update; \
+    sed -i 's/"redis", "postgres", "mysql", "sqlite"/"redis", "postgres", "mysql", "sqlite", "rocksdb"/' Cargo.toml;
   
   RUN set -ex; \
     cd ${BUILD_DIR}; \
+    rustup target add aarch64-unknown-linux-musl; \
     cargo build --target aarch64-unknown-linux-musl --manifest-path=Cargo.toml --release;
     
 # :: Header
