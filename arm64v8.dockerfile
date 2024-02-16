@@ -20,6 +20,7 @@
     apt install -y \
       clang \
       musl-tools; \
+    rustup target add ${BUILD_ARCH}; \
     ln -s /bin/g++ /bin/musl-g++; \
     git clone https://github.com/stalwartlabs/smtp-server.git; \
     cd ${BUILD_DIR}; \
@@ -30,8 +31,9 @@
   
   RUN set -ex; \
     cd ${BUILD_DIR}; \
-    rustup target add ${BUILD_ARCH}; \
-    cargo build --target ${BUILD_ARCH} --manifest-path=Cargo.toml --release; \
+    cargo build --target ${BUILD_ARCH} --manifest-path=Cargo.toml --release;
+
+  RUN set -ex; \
     mv /smtp-server/target/${BUILD_ARCH}/release/stalwart-smtp /usr/local/bin;
     
 # :: Header
