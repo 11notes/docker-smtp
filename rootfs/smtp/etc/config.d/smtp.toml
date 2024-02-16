@@ -1,0 +1,89 @@
+[server.listener."smtp"]
+bind = ["[::]:25"]
+protocol = "smtp"
+greeting = "smtp server on %s"
+
+[server.listener."submission"]
+bind = ["[::]:587"]
+protocol = "smtp"
+
+[server.listener."submissions"]
+bind = ["[::]:465"]
+protocol = "smtp"
+tls.implicit = true
+
+[server.listener."management"]
+bind = ["0.0.0.0:8080"]
+protocol = "http"
+
+[session]
+timeout = "5m"
+transfer-limit = 262144000
+duration = "10m"
+
+[session.ehlo]
+require = true
+reject-non-fqdn = [ { if = "listener", eq = "smtp", then = true},
+                    { else = false } ]
+
+[session.extensions]
+pipelining = true
+chunking = true
+requiretls = true
+no-soliciting = ""
+dsn = false
+future-release = false
+deliver-by = false
+mt-priority = false
+vrfy = false
+expn = false
+
+[session.rcpt]
+relay = [ { if = "key_exists('redis', 'fqdn:' + rcpt_domain)", then = true }, 
+          { else = false } ]
+
+[session.data.limits]
+messages = 16
+size = 104857600
+received-headers = 25
+
+[session.data.add-headers]
+received = [ { if = "listener", eq = "smtp", then = true }, 
+             { else = false } ]
+received-spf = [ { if = "listener", eq = "smtp", then = true }, 
+                 { else = false } ]
+auth-results = [ { if = "listener", eq = "smtp", then = true }, 
+                 { else = false } ]
+message-id = [ { if = "listener", eq = "smtp", then = false }, 
+               { else = true } ]
+date = [ { if = "listener", eq = "smtp", then = false }, 
+         { else = true } ]
+return-path = false
+
+[[session.throttle]]
+key = ["remote_ip"]
+concurrency = 3
+rate = "100/1s"
+
+[queue]
+path = "%{BASE_PATH}%/var/queue"
+hash = 64
+
+[queue.schedule]
+retry = "[2m, 5m, 10m, 15m, 30m, 1h, 2h]"
+notify = "[1d, 3d]"
+expire = "17d"
+
+[queue.outbound]
+next-hop = "internal"
+
+[remote."internal"]
+address = "smtp.domain.com"
+port = 25
+protocol = "smtp"
+concurrency = 32
+timeout = "1m"
+
+[remote."internal".tls]
+implicit = true
+allow-invalid-certs = false

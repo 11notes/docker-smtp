@@ -1,0 +1,42 @@
+[server]
+hostname = "%{HOST}%"
+max-connections = 8192
+
+[server.security]
+blocked-networks = {}
+fail2ban = "100/1d"
+
+[server.socket]
+nodelay = true
+reuse-addr = true
+reuse-port = true
+backlog = 1024
+ttl = 3600
+send-buffer-size = 65535
+recv-buffer-size = 65535
+
+[global]
+shared-map = {shard = 32, capacity = 10}
+
+[server.tls]
+enable = true
+implicit = false
+timeout = "1m"
+certificate = "default"
+ignore-client-order = true
+
+[certificate."default"]
+cert = "file:///%{BASE_PATH}%/ssl/default.crt"
+private-key = "file:///%{BASE_PATH}%/ssl/default.key"
+
+[global.tracing]
+method = "stdout"
+level = "trace"
+
+[resolver]
+type = "system"
+preserve-intermediates = true
+concurrency = 2
+timeout = "5s"
+attempts = 2
+try-tcp-on-error = true
