@@ -28,12 +28,13 @@
   RUN set -ex; \
     cd ${BUILD_DIR}; \
     rustup target add ${BUILD_ARCH}; \
-    cargo build --target ${BUILD_ARCH} --manifest-path=Cargo.toml --release;
+    cargo build --target ${BUILD_ARCH} --manifest-path=Cargo.toml --release; \
+    mv /smtp-server/target/${BUILD_ARCH}/release/stalwart-smtp /usr/local/bin;
     
 # :: Header
   FROM 11notes/alpine:stable
   COPY --from=util /util/linux/shell/elevenLogJSON /usr/local/bin
-  COPY --from=build /smtp-server/target/${BUILD_ARCH}/release/stalwart-smtp /usr/local/bin
+  COPY --from=build /usr/local/bin/stalwart-smtp /usr/local/bin
   ENV APP_NAME="stalwart-smtp"
   ENV APP_ROOT=/smtp
 
