@@ -1,2 +1,2 @@
 #!/bin/ash
-  curl --insecure --max-time 3 -kILs --fail https://localhost:8200
+  nc -w 1 localhost 25 | grep -qE "^220"

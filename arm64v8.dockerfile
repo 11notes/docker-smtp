@@ -13,7 +13,7 @@
   FROM rust as build
   ENV BUILD_VERSION=v0.6.0
   ENV BUILD_DIR=/smtp-server
-  ENV BUILD_ARCH=aarch64-unknown-linux-musl
+  ENV BUILD_ARCH=x86_64-unknown-linux-musl
 
   RUN set -ex; \
     apt update -y; \
@@ -26,12 +26,11 @@
     cd ${BUILD_DIR}; \
     git checkout ${BUILD_VERSION}; \
     git submodule init; \
-    git submodule update; \
-    sed -i 's/"redis", "postgres", "mysql", "sqlite"/"redis", "postgres", "mysql", "sqlite", "rocksdb"/' Cargo.toml;
+    git submodule update;
   
   RUN set -ex; \
     cd ${BUILD_DIR}; \
-    cargo build --target ${BUILD_ARCH} --manifest-path=Cargo.toml --release;
+    CC=${BUILD_ARCH} cargo build --target ${BUILD_ARCH} --manifest-path=Cargo.toml --release;
 
   RUN set -ex; \
     mv /smtp-server/target/${BUILD_ARCH}/release/stalwart-smtp /usr/local/bin;
@@ -51,9 +50,8 @@
     RUN set -ex; \
       mkdir -p ${APP_ROOT}; \
       mkdir -p ${APP_ROOT}/etc; \
-      mkdir -p ${APP_ROOT}/var/db; \
-      mkdir -p ${APP_ROOT}/var/queue; \
-      mkdir -p ${APP_ROOT}/var/reports; \
+      mkdir -p ${APP_ROOT}/var \
+      mkdir -p ${APP_ROOT}/log; \
       mkdir -p ${APP_ROOT}/ssl; \
       apk --no-cache add \
         openssl; \
@@ -71,7 +69,7 @@
         ${APP_ROOT};
 
 # :: Volumes
-  VOLUME ["${APP_ROOT}/etc", "${APP_ROOT}/var", "${APP_ROOT}/ssl"]
+  VOLUME ["${APP_ROOT}/etc", "${APP_ROOT}/var", "${APP_ROOT}/log", "${APP_ROOT}/ssl"]
 
 # :: Monitor
   HEALTHCHECK CMD /usr/local/bin/healthcheck.sh || exit 1
