@@ -13,7 +13,7 @@
   FROM rust as build
   ENV BUILD_VERSION=v0.6.0
   ENV BUILD_DIR=/smtp-server
-  ENV BUILD_ARCH=x86_64-unknown-linux-musl
+  ENV BUILD_ARCH=aarch64-unknown-linux-musl
 
   RUN set -ex; \
     apt update -y; \
