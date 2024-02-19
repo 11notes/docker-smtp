@@ -8,8 +8,8 @@
         -days 3650 -nodes -sha256 &> /dev/null
     fi
 
-    if [ -z "${APP_ROOT}/etc/config.toml" ]; then
-      elevenLogJSON info "config ${APP_ROOT}/etc/config.toml missing"
+    if [ ! -f "${APP_ROOT}/etc/config.toml" ]; then
+      elevenLogJSON error "config ${APP_ROOT}/etc/config.toml missing, please create!"
     else
       elevenLogJSON info "starting stalwart-smtp server"
       set -- "stalwart-smtp" \

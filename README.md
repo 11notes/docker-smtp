@@ -6,25 +6,17 @@
 **Simple SMTP relay with queues and anti-spam (for edge purposes)**
 
 # SYNOPSIS
-What can I do with this? This image will provide you with a simple SMTP relay for ingress at your edge to filter and relay incoming emails.
+What can I do with this? This image will provide you with a simple SMTP relay for ingress at your edge to filter and relay incoming emails. This image supports only PostgreSQL and Redis as directory and storage backend.
 
 
 # VOLUMES
 * **/smtp/etc** - Directory of configuration files
-* **/smtp/var** - Directory of db, queue, reports and so on
 
 # RUN
 ```shell
 docker run --name smtp \
   -v .../etc:/smtp/etc \
-  -v .../var:/smtp/var \
   -d 11notes/smtp:[tag]
-```
-
-# EXAMPLES
-## config /smtp/etc/config.toml
-```toml
-
 ```
 
 # DEFAULT SETTINGS
