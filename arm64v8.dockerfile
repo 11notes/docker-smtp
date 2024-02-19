@@ -14,23 +14,33 @@
   ENV BUILD_VERSION=v0.6.0
   ENV BUILD_DIR=/smtp-server
   ENV BUILD_ARCH=aarch64-unknown-linux-musl
+  ENV CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=aarch64-linux-gnu-gcc
+  ENV CC=aarch64-linux-gnu-gcc
 
   RUN set -ex; \
-    apt update -y; \
+    apt update; \
+    apt upgrade -y; \
     apt install -y \
-      clang \
-      musl-tools; \
+      g++-aarch64-linux-gnu \
+      libc6-dev-arm64-cross; \
     rustup target add ${BUILD_ARCH}; \
-    ln -s /bin/g++ /bin/musl-g++; \
     git clone https://github.com/stalwartlabs/smtp-server.git; \
     cd ${BUILD_DIR}; \
     git checkout ${BUILD_VERSION}; \
     git submodule init; \
-    git submodule update;
+    git submodule update; \
+    wget -q -O - https://musl.cc/aarch64-linux-musl-cross.tgz | tar -zxf -; \
+    cd aarch64-linux-musl-cross; \
+    rm -f $(find . -name "ld-musl-*.so.1"); \
+    rm usr; \
+    cp -R ./bin/* /bin; \
+    cp -R ./lib/* /lib; \
+    cd ..; \
+    sed -i 's/"redis", "postgres", "mysql", "sqlite"/"redis", "postgres"/' Cargo.toml;
   
   RUN set -ex; \
     cd ${BUILD_DIR}; \
-    CC=${BUILD_ARCH} cargo build --target ${BUILD_ARCH} --manifest-path=Cargo.toml --release;
+    cargo build --target ${BUILD_ARCH} --manifest-path=Cargo.toml --release;
 
   RUN set -ex; \
     mv /smtp-server/target/${BUILD_ARCH}/release/stalwart-smtp /usr/local/bin;

@@ -23,7 +23,8 @@
     cd ${BUILD_DIR}; \
     git checkout ${BUILD_VERSION}; \
     git submodule init; \
-    git submodule update;
+    git submodule update; \
+    sed -i 's/"redis", "postgres", "mysql", "sqlite"/"redis", "postgres"/' Cargo.toml;
   
   RUN set -ex; \
     cd ${BUILD_DIR}; \

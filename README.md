@@ -24,20 +24,6 @@ docker run --name smtp \
 # EXAMPLES
 ## config /smtp/etc/config.toml
 ```toml
-[macros]
-host = "mail.domain.com"
-default_domain = "domain.com"
-base_path = "/smtp"
-default_directory = "internal"
-default_store = "rocksdb"
-
-[include]
-files = [ "%{BASE_PATH}%/etc/config.d/server.toml",
-          "%{BASE_PATH}%/etc/config.d/directory.toml",
-          "%{BASE_PATH}%/etc/config.d/rocksdb.toml",
-          "%{BASE_PATH}%/etc/config.d/redis.toml",
-          "%{BASE_PATH}%/etc/config.d/storage.toml",
-          "%{BASE_PATH}%/etc/config.d/smtp.toml" ]
 
 ```
 
