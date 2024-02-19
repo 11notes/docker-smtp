@@ -3,10 +3,10 @@
 # 🏔️ Alpine - Stalwart SMTP
 ![size](https://img.shields.io/docker/image-size/11notes/smtp/0.6.0?color=0eb305) ![version](https://img.shields.io/docker/v/11notes/smtp/0.6.0?color=eb7a09) ![pulls](https://img.shields.io/docker/pulls/11notes/smtp?color=2b75d6) ![activity](https://img.shields.io/github/commit-activity/m/11notes/docker-smtp?color=c91cb8) ![commit-last](https://img.shields.io/github/last-commit/11notes/docker-smtp?color=c91cb8) ![stars](https://img.shields.io/docker/stars/11notes/smtp?color=e6a50e)
 
-**Simple SMTP relay with queues and anti-spam (for edge purposes)**
+**Simple SMTP relay with queues using Postgre and Redis**
 
 # SYNOPSIS
-What can I do with this? This image will provide you with a simple SMTP relay for ingress at your edge to filter and relay incoming emails. This image supports only PostgreSQL and Redis as directory and storage backend.
+What can I do with this? This image will provide you with a simple SMTP relay for ingress at your edge to filter and relay incoming emails. This image supports only PostgreSQL and Redis as directory and storage backend. It is intentionally slimmed down to provide ingress/egress at your edge, this is **not** a full email server, only the SMTP part. Use it for distributed ingress in different locations and relay all emails to a central core. Can be used for distributed egress as well.
 
 
 # VOLUMES
