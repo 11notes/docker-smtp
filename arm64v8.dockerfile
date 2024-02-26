@@ -36,7 +36,7 @@
     cp -R ./bin/* /bin; \
     cp -R ./lib/* /lib; \
     cd ..; \
-    sed -i 's/"redis", "postgres", "mysql", "sqlite"/"redis", "mysql"/' Cargo.toml;
+    sed -i 's/"redis", "postgres", "mysql", "sqlite"/"redis", "postgres", "mysql", "sqlite", "rocksdb"/' Cargo.toml;
   
   RUN set -ex; \
     cd ${BUILD_DIR}; \
